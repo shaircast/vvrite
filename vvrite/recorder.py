@@ -59,7 +59,7 @@ class Recorder:
             level = _compute_rms(indata)
             self._level_callback(level)
 
-    def stop(self) -> str:
+    def stop(self) -> str | None:
         """Stop recording and return path to the raw WAV file."""
         if self._stream is not None:
             self._stream.stop()
@@ -69,7 +69,7 @@ class Recorder:
         self._level_callback = None
 
         if not self._frames:
-            raise RuntimeError("No audio recorded")
+            return None
 
         audio = np.concatenate(self._frames, axis=0)
         fd, path = tempfile.mkstemp(suffix=".wav")

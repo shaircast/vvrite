@@ -74,7 +74,8 @@ class OverlayController(NSObject):
         self._panel.setHasShadow_(True)
         self._panel.setAlphaValue_(0.0)
         self._panel.setCollectionBehavior_(
-            1 << 4  # NSWindowCollectionBehaviorCanJoinAllSpaces
+            (1 << 1)  # NSWindowCollectionBehaviorMoveToActiveSpace
+            | (1 << 8)  # NSWindowCollectionBehaviorFullScreenAuxiliary
         )
 
         # Visual effect background

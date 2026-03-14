@@ -226,6 +226,12 @@ class AppDelegate(NSObject):
             )
             return
 
+        if raw_path is None:
+            self.performSelectorOnMainThread_withObject_waitUntilDone_(
+                "transcriptionComplete:", None, False
+            )
+            return
+
         threading.Thread(
             target=self._transcribe_and_paste,
             args=(raw_path,),
