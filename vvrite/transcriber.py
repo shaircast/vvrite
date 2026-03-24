@@ -104,12 +104,23 @@ def transcribe(raw_wav_path: str, prefs: Preferences = None) -> str:
     if prefs is None:
         prefs = Preferences()
 
+    from vvrite.locales import ASR_LANGUAGE_MAP
+
     normalized_path = audio_utils.normalize(raw_wav_path)
     try:
         kwargs = {"max_tokens": prefs.max_tokens}
         custom_words = prefs.custom_words.strip()
         if custom_words:
             kwargs["system_prompt"] = f"Use the following spellings: {custom_words}"
+
+        asr_lang = prefs.asr_language
+        if asr_lang != "auto":
+            language_param = ASR_LANGUAGE_MAP.get(asr_lang)
+            if language_param is None:
+                print(f"Unknown ASR language code: {asr_lang}, falling back to auto-detect")
+            else:
+                kwargs["language"] = language_param
+
         result = _model.generate(
             normalized_path,
             **kwargs,

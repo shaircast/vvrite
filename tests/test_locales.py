@@ -39,6 +39,17 @@ class TestSupportedLanguages(unittest.TestCase):
                 f"ASR_LANGUAGE_MAP missing entry for code '{code}'",
             )
 
+    def test_asr_language_map_returns_correct_names(self):
+        from vvrite.locales import ASR_LANGUAGE_MAP
+        self.assertEqual(ASR_LANGUAGE_MAP["ko"], "Korean")
+        self.assertEqual(ASR_LANGUAGE_MAP["en"], "English")
+        self.assertEqual(ASR_LANGUAGE_MAP["zh-Hans"], "Chinese")
+        self.assertEqual(ASR_LANGUAGE_MAP["zh-Hant"], "Chinese")
+
+    def test_asr_language_map_unknown_code_returns_none(self):
+        from vvrite.locales import ASR_LANGUAGE_MAP
+        self.assertIsNone(ASR_LANGUAGE_MAP.get("xx"))
+
 
 class TestTranslation(unittest.TestCase):
     def setUp(self):
