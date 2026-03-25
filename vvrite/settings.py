@@ -469,6 +469,7 @@ class SettingsWindowController(NSObject):
         self._populate_mics()
         self._populate_sounds()
         self._window.makeKeyAndOrderFront_(sender)
+        NSApp.activateIgnoringOtherApps_(True)
         self._permission_timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
             2.0, self, "pollPermissions:", None, True
         )
@@ -615,7 +616,9 @@ class SettingsWindowController(NSObject):
     def startSoundChanged_(self, sender):
         title = sender.titleOfSelectedItem()
         if title == t("settings.sound.custom"):
-            self._open_custom_sound_panel(for_start=True)
+            self.performSelector_withObject_afterDelay_(
+                "openStartCustomSoundPanel:", None, 0.0
+            )
             return
         # If re-selecting the custom file entry, keep the full path
         current = self._prefs.sound_start
@@ -629,7 +632,9 @@ class SettingsWindowController(NSObject):
     def stopSoundChanged_(self, sender):
         title = sender.titleOfSelectedItem()
         if title == t("settings.sound.custom"):
-            self._open_custom_sound_panel(for_start=False)
+            self.performSelector_withObject_afterDelay_(
+                "openStopCustomSoundPanel:", None, 0.0
+            )
             return
         # If re-selecting the custom file entry, keep the full path
         current = self._prefs.sound_stop
@@ -660,19 +665,30 @@ class SettingsWindowController(NSObject):
             sounds.play(self._prefs.sound_stop, vol)
 
     def _open_custom_sound_panel(self, for_start: bool):
-        import UniformTypeIdentifiers
+        NSApp.activateIgnoringOtherApps_(True)
+        if self._window is not None:
+            self._window.makeKeyAndOrderFront_(None)
+
         panel = NSOpenPanel.openPanel()
-        allowed_types = [
-            UniformTypeIdentifiers.UTType.typeWithFilenameExtension_(ext)
-            for ext in ["aiff", "wav", "mp3", "m4a", "caf"]
-        ]
-        panel.setAllowedContentTypes_(allowed_types)
+        panel.setAllowedFileTypes_(["aiff", "wav", "mp3", "m4a", "caf"])
         panel.setCanChooseFiles_(True)
         panel.setCanChooseDirectories_(False)
         panel.setAllowsMultipleSelection_(False)
         panel.setTitle_(t("settings.sound.choose_file"))
 
-        if panel.runModal() == 1:  # NSModalResponseOK
+        if self._window is not None:
+            panel.beginSheetModalForWindow_completionHandler_(
+                self._window,
+                lambda response: self._handle_custom_sound_panel_result(
+                    response, panel, for_start
+                ),
+            )
+            return
+
+        self._handle_custom_sound_panel_result(panel.runModal(), panel, for_start)
+
+    def _handle_custom_sound_panel_result(self, response, panel, for_start: bool):
+        if response == 1:  # NSModalResponseOK
             path = str(panel.URL().path())
             if for_start:
                 self._prefs.sound_start = path
@@ -680,10 +696,18 @@ class SettingsWindowController(NSObject):
             else:
                 self._prefs.sound_stop = path
                 sounds.play(path, self._prefs.stop_volume)
-            self._populate_sounds()
-        else:
-            # User cancelled — revert dropdown to current selection
-            self._populate_sounds()
+
+        # Rebuild the popup in both the success and cancel paths so it reflects
+        # the persisted selection rather than the transient "Custom..." item.
+        self._populate_sounds()
+
+    @objc.typedSelector(b"v@:@")
+    def openStartCustomSoundPanel_(self, _sender):
+        self._open_custom_sound_panel(True)
+
+    @objc.typedSelector(b"v@:@")
+    def openStopCustomSoundPanel_(self, _sender):
+        self._open_custom_sound_panel(False)
 
     def _show_launch_at_login_error(self, message):
         alert = NSAlert.alloc().init()
