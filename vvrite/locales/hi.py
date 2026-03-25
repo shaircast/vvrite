@@ -66,8 +66,8 @@ strings = {
         "title": "सेटिंग्स",
         "language": {
             "title": "भाषा",
-            "ui_language": "UI भाषा",
-            "asr_language": "वाक् पहचान भाषा",
+            "ui_language": "UI",
+            "asr_language": "पहचान",
             "restart_message": "भाषा परिवर्तन लागू करने के लिए vvrite पुनः आरंभ करें।",
             "restart_now": "अभी पुनः आरंभ करें",
         },

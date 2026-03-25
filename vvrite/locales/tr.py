@@ -66,8 +66,8 @@ strings = {
         "title": "Ayarlar",
         "language": {
             "title": "Dil",
-            "ui_language": "Arayüz Dili",
-            "asr_language": "Konuşma Tanıma Dili",
+            "ui_language": "Arayüz",
+            "asr_language": "Tanıma",
             "restart_message": "Dil değişikliklerini uygulamak için vvrite'ı yeniden başlatın.",
             "restart_now": "Şimdi Yeniden Başlat",
         },

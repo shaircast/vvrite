@@ -66,8 +66,8 @@ strings = {
         "title": "الإعدادات",
         "language": {
             "title": "اللغة",
-            "ui_language": "لغة الواجهة",
-            "asr_language": "لغة التعرف على الكلام",
+            "ui_language": "الواجهة",
+            "asr_language": "التعرف",
             "restart_message": "أعد تشغيل vvrite لتطبيق تغييرات اللغة.",
             "restart_now": "إعادة التشغيل الآن",
         },

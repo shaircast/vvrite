@@ -66,8 +66,8 @@ strings = {
         "title": "Settings",
         "language": {
             "title": "Language",
-            "ui_language": "UI Language",
-            "asr_language": "Speech Recognition Language",
+            "ui_language": "UI",
+            "asr_language": "Recognition",
             "restart_message": "Restart vvrite to apply language changes.",
             "restart_now": "Restart Now",
         },

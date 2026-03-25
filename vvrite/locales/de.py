@@ -66,8 +66,8 @@ strings = {
         "title": "Einstellungen",
         "language": {
             "title": "Sprache",
-            "ui_language": "Oberflächensprache",
-            "asr_language": "Spracherkennungssprache",
+            "ui_language": "Oberfläche",
+            "asr_language": "Erkennung",
             "restart_message": "Starten Sie vvrite neu, um die Sprachänderungen zu übernehmen.",
             "restart_now": "Jetzt neu starten",
         },

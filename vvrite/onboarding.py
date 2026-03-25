@@ -22,9 +22,12 @@ from AppKit import (
     NSView,
     NSImage,
     NSImageView,
+    NSLayoutAttributeCenterX,
     NSPopUpButton,
     NSProgressIndicator,
     NSProgressIndicatorStyleBar,
+    NSStackView,
+    NSUserInterfaceLayoutOrientationVertical,
     NSWorkspace,
 )
 from Foundation import NSLog, NSURL, NSTimer
@@ -74,6 +77,7 @@ class OnboardingWindowController(NSObject):
         self._load_retries = 0
         self._local_model_path = None
         self._lang_popup = None
+        self._welcome_footer_views = []
         self._build_window()
         return self
 
@@ -146,6 +150,10 @@ class OnboardingWindowController(NSObject):
         # Clear content area
         for sub in list(self._content_area.subviews()):
             sub.removeFromSuperview()
+        for sub in self._welcome_footer_views:
+            sub.removeFromSuperview()
+        self._welcome_footer_views = []
+        self._lang_popup = None
 
         # Stop permission timer if leaving permissions step
         if step != _PERMISSIONS and self._permission_timer:
@@ -214,44 +222,60 @@ class OnboardingWindowController(NSObject):
 
     def _build_welcome(self):
         area = self._content_area
-        w = _WIDTH
+        root = self._window.contentView()
 
         # Icon
         icon = NSImage.imageWithSystemSymbolName_accessibilityDescription_(
             "waveform", None
         )
-        icon_view = NSImageView.alloc().initWithFrame_(
-            NSMakeRect((w - 64) / 2, 120, 64, 64)
-        )
+        icon_view = NSImageView.alloc().initWithFrame_(NSMakeRect(0, 0, 64, 64))
         icon_view.setImage_(icon)
         icon_view.setContentTintColor_(NSColor.controlAccentColor())
-        area.addSubview_(icon_view)
+        icon_view.setTranslatesAutoresizingMaskIntoConstraints_(False)
 
         # Title
         title = NSTextField.labelWithString_("vvrite")
-        title.setFrame_(NSMakeRect(0, 88, w, 28))
         title.setFont_(NSFont.boldSystemFontOfSize_(22.0))
         title.setAlignment_(1)
-        area.addSubview_(title)
+        title.setTranslatesAutoresizingMaskIntoConstraints_(False)
 
         # Subtitle
         subtitle = NSTextField.labelWithString_(t("onboarding.welcome.subtitle"))
-        subtitle.setFrame_(NSMakeRect(0, 64, w, 20))
         subtitle.setFont_(NSFont.systemFontOfSize_(13.0))
         subtitle.setTextColor_(NSColor.secondaryLabelColor())
         subtitle.setAlignment_(1)
-        area.addSubview_(subtitle)
+        subtitle.setTranslatesAutoresizingMaskIntoConstraints_(False)
 
-        # Language selector
-        lang_label = NSTextField.labelWithString_(t("onboarding.language.title"))
-        lang_label.setFrame_(NSMakeRect(0, 38, w, 16))
-        lang_label.setFont_(NSFont.systemFontOfSize_(11.0))
-        lang_label.setTextColor_(NSColor.secondaryLabelColor())
-        lang_label.setAlignment_(1)
-        area.addSubview_(lang_label)
+        content_stack = NSStackView.stackViewWithViews_([icon_view, title, subtitle])
+        content_stack.setOrientation_(NSUserInterfaceLayoutOrientationVertical)
+        content_stack.setAlignment_(NSLayoutAttributeCenterX)
+        content_stack.setSpacing_(6.0)
+        content_stack.setCustomSpacing_afterView_(2.0, icon_view)
+        content_stack.setCustomSpacing_afterView_(6.0, title)
+        content_stack.setTranslatesAutoresizingMaskIntoConstraints_(False)
+        area.addSubview_(content_stack)
+
+        content_stack.centerXAnchor().constraintEqualToAnchor_(
+            area.centerXAnchor()
+        ).setActive_(True)
+        content_stack.centerYAnchor().constraintEqualToAnchor_(
+            area.centerYAnchor()
+        ).setActive_(True)
+        icon_view.widthAnchor().constraintEqualToConstant_(64.0).setActive_(True)
+        icon_view.heightAnchor().constraintEqualToConstant_(64.0).setActive_(True)
+
+        # Put language selection on the same footer row as the primary action.
+        lang_icon = NSImage.imageWithSystemSymbolName_accessibilityDescription_(
+            "globe", t("onboarding.language.title")
+        )
+        lang_icon_view = NSImageView.alloc().initWithFrame_(NSMakeRect(22, 19, 16, 16))
+        lang_icon_view.setImage_(lang_icon)
+        lang_icon_view.setContentTintColor_(NSColor.secondaryLabelColor())
+        root.addSubview_(lang_icon_view)
+        self._welcome_footer_views.append(lang_icon_view)
 
         self._lang_popup = NSPopUpButton.alloc().initWithFrame_pullsDown_(
-            NSMakeRect((w - 200) / 2, 12, 200, 24), False
+            NSMakeRect(46, 15, 178, 26), False
         )
         self._lang_popup.addItemWithTitle_(t("common.system_default"))
         for code, native_name in SUPPORTED_LANGUAGES:
@@ -268,7 +292,8 @@ class OnboardingWindowController(NSObject):
                     break
         self._lang_popup.setTarget_(self)
         self._lang_popup.setAction_("onboardingLanguageChanged:")
-        area.addSubview_(self._lang_popup)
+        root.addSubview_(self._lang_popup)
+        self._welcome_footer_views.append(self._lang_popup)
 
     @objc.typedSelector(b"v@:@")
     def onboardingLanguageChanged_(self, sender):

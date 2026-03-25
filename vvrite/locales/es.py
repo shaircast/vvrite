@@ -66,8 +66,8 @@ strings = {
         "title": "Ajustes",
         "language": {
             "title": "Idioma",
-            "ui_language": "Idioma de la interfaz",
-            "asr_language": "Idioma de reconocimiento de voz",
+            "ui_language": "Interfaz",
+            "asr_language": "Reconocimiento",
             "restart_message": "Reinicia vvrite para aplicar los cambios de idioma.",
             "restart_now": "Reiniciar ahora",
         },

@@ -66,8 +66,8 @@ strings = {
         "title": "Настройки",
         "language": {
             "title": "Язык",
-            "ui_language": "Язык интерфейса",
-            "asr_language": "Язык распознавания речи",
+            "ui_language": "Интерфейс",
+            "asr_language": "Распознавание",
             "restart_message": "Перезапустите vvrite для применения языковых изменений.",
             "restart_now": "Перезапустить сейчас",
         },

@@ -66,8 +66,8 @@ strings = {
         "title": "設定",
         "language": {
             "title": "言語",
-            "ui_language": "UI言語",
-            "asr_language": "音声認識言語",
+            "ui_language": "UI",
+            "asr_language": "認識",
             "restart_message": "言語の変更を適用するにはvvriteを再起動してください。",
             "restart_now": "今すぐ再起動",
         },

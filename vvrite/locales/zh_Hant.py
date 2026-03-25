@@ -66,8 +66,8 @@ strings = {
         "title": "設定",
         "language": {
             "title": "語言",
-            "ui_language": "介面語言",
-            "asr_language": "語音辨識語言",
+            "ui_language": "介面",
+            "asr_language": "辨識",
             "restart_message": "重新啟動 vvrite 以套用語言變更。",
             "restart_now": "立即重新啟動",
         },
