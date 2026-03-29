@@ -36,7 +36,7 @@ from vvrite.audio_devices import (
 )
 from vvrite.locales import t, SUPPORTED_LANGUAGES
 from vvrite.preferences import Preferences
-from vvrite.widgets import ShortcutField
+from vvrite.widgets import ShortcutField, format_shortcut
 
 
 class SettingsWindowController(NSObject):
@@ -160,6 +160,7 @@ class SettingsWindowController(NSObject):
         self._shortcut_field = ShortcutField.alloc().initWithFrame_preferences_(
             NSMakeRect(20, y, 280, 24), self._prefs
         )
+        self._shortcut_field._on_change = self._update_hotkey_display
         content.addSubview_(self._shortcut_field)
 
         change_btn = NSButton.alloc().initWithFrame_(NSMakeRect(310, y, 80, 24))
@@ -491,6 +492,14 @@ class SettingsWindowController(NSObject):
     @objc.typedSelector(b"v@:@")
     def pollPermissions_(self, timer):
         self._update_permissions()
+
+    def _update_hotkey_display(self):
+        delegate = NSApp.delegate()
+        if delegate and delegate._status_bar:
+            hotkey_str = format_shortcut(
+                self._prefs.hotkey_keycode, self._prefs.hotkey_modifiers
+            )
+            delegate._status_bar.setHotkeyDisplay_(hotkey_str)
 
     @objc.typedSelector(b"v@:@")
     def changeShortcut_(self, sender):

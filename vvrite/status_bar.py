@@ -13,6 +13,7 @@ from AppKit import (
 )
 
 from vvrite.locales import t
+from vvrite.widgets import format_shortcut
 
 _READY_STATES = {"ready", "recording", "transcribing"}
 
@@ -57,8 +58,10 @@ class StatusBarController(NSObject):
         self._menu.addItem_(NSMenuItem.separatorItem())
 
         # Hotkey display
+        prefs = self._delegate._prefs
+        hotkey_str = format_shortcut(prefs.hotkey_keycode, prefs.hotkey_modifiers)
         self._hotkey_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
-            t("menu.hotkey", hotkey="⌥Space"), None, ""
+            t("menu.hotkey", hotkey=hotkey_str), None, ""
         )
         self._hotkey_item.setEnabled_(False)
         self._menu.addItem_(self._hotkey_item)

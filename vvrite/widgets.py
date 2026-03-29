@@ -72,6 +72,7 @@ class ShortcutField(NSTextField):
         self._keycode_key = str(keycode_key)
         self._modifiers_key = str(modifiers_key)
         self._capturing = False
+        self._on_change = None
         self.setEditable_(False)
         self.setSelectable_(False)
         self.setBezeled_(True)
@@ -121,6 +122,8 @@ class ShortcutField(NSTextField):
         setattr(self._prefs, self._modifiers_key, int(cg_flags))
         self._capturing = False
         self._update_display()
+        if self._on_change:
+            self._on_change()
 
     def acceptsFirstResponder(self):
         return True
