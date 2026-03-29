@@ -49,7 +49,7 @@ That includes Korean, English, Japanese, Chinese, Cantonese, Arabic, German, Fre
 
 ## Requirements
 
-- macOS 13+ on Apple Silicon (M1/M2/M3/M4)
+- macOS 15+ on Apple Silicon for pre-built .app; macOS 13+ when building from source
 - ~2 GB disk space for the ASR model
 - `ffmpeg` installed when running from source
 - Microphone permission

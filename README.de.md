@@ -49,7 +49,7 @@ Dazu gehören Koreanisch, Englisch, Japanisch, Chinesisch, Kantonesisch, Arabisc
 
 ## Voraussetzungen
 
-- macOS 13 oder neuer auf Apple Silicon (M1/M2/M3/M4)
+- Vorgefertigte .app: macOS 15 oder neuer auf Apple Silicon (M1/M2/M3/M4); aus Quellcode: macOS 13+
 - Ca. 2 GB Speicherplatz für das ASR-Modell
 - `ffmpeg` muss bei Ausführung aus dem Quellcode installiert sein
 - Mikrofonberechtigung

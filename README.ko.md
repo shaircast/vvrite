@@ -49,7 +49,7 @@ vvrite는 [`mlx-community/Qwen3-ASR-1.7B-8bit`](https://huggingface.co/mlx-commu
 
 ## 요구 사항
 
-- Apple Silicon (M1/M2/M3/M4) 탑재 macOS 13 이상
+- 빌드된 .app은 Apple Silicon (M1/M2/M3/M4) 탑재 macOS 15 이상; 소스에서 빌드 시 macOS 13 이상
 - ASR 모델용 디스크 공간 약 2 GB
 - 소스에서 실행 시 `ffmpeg` 필요
 - 마이크 권한

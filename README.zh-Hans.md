@@ -49,7 +49,7 @@ vvrite 使用 [`mlx-community/Qwen3-ASR-1.7B-8bit`](https://huggingface.co/mlx-c
 
 ## 系统要求
 
-- 搭载 Apple Silicon（M1/M2/M3/M4）的 macOS 13 或更高版本
+- 预构建 .app 需要搭载 Apple Silicon（M1/M2/M3/M4）的 macOS 15 或更高版本；从源代码构建时 macOS 13 或更高版本
 - ASR 模型需要约 2 GB 磁盘空间
 - 从源码运行时需要安装 `ffmpeg`
 - 麦克风权限

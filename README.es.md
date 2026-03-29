@@ -49,7 +49,7 @@ Esto incluye coreano, inglés, japonés, chino, cantonés, árabe, alemán, fran
 
 ## Requisitos
 
-- macOS 13 o superior en Apple Silicon (M1/M2/M3/M4)
+- .app precompilada: macOS 15 o superior en Apple Silicon (M1/M2/M3/M4); compilación desde fuente: macOS 13+
 - Aproximadamente 2 GB de espacio en disco para el modelo ASR
 - `ffmpeg` instalado cuando se ejecuta desde el código fuente
 - Permiso de micrófono

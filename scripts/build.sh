@@ -37,6 +37,21 @@ if missing:
 print("  ✓ Required Python bridge modules available")
 PY
 
+# ── Step 0.5: Backward-compatible metallib ────────────────────
+# mlx-metal ships per-macOS-version wheels. A metallib built for macOS 26
+# (MSL 4.0) won't load on macOS 15. Swap in the macOS 15 wheel's metallib
+# so the resulting .app runs on macOS 15+.
+MLX_COMPAT_DIR=$(mktemp -d)
+MLX_METAL_VER=$(pip show mlx-metal | awk '/^Version:/{print $2}')
+echo "▸ Fetching macOS 15-compatible mlx-metal $MLX_METAL_VER..."
+pip download --no-deps -d "$MLX_COMPAT_DIR" \
+    "mlx-metal==$MLX_METAL_VER" \
+    --platform macosx_15_0_arm64 --only-binary :all: --quiet
+SITE=$(python -c "import site; print(site.getsitepackages()[0])")
+unzip -o "$MLX_COMPAT_DIR"/mlx_metal-*.whl "mlx/lib/mlx.metallib" -d "$SITE" > /dev/null
+rm -rf "$MLX_COMPAT_DIR"
+echo "  ✓ Backward-compatible metallib installed (macOS 15+)"
+
 # ── Step 1: Build ──────────────────────────────────────────────
 echo "▸ Building with PyInstaller..."
 pyinstaller vvrite.spec --noconfirm
