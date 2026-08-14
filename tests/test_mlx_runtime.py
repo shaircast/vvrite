@@ -7,6 +7,7 @@ import unittest
 from vvrite.mlx_runtime import (
     _MODELS_PACKAGE,
     install_qwen_only_model_namespace,
+    install_qwen_tokenizer_registry,
 )
 
 
@@ -45,6 +46,30 @@ class TestQwenOnlyModelNamespace(unittest.TestCase):
         self.assertTrue(hasattr(module, "Model"))
         self.assertNotIn(f"{_MODELS_PACKAGE}.whisper", sys.modules)
         self.assertNotIn(f"{_MODELS_PACKAGE}.voxtral", sys.modules)
+
+
+class TestQwenTokenizerRegistry(unittest.TestCase):
+    def test_registers_qwen_tokenizer_idempotently(self):
+        from transformers.models.auto.tokenization_auto import (
+            REGISTERED_TOKENIZER_CLASSES,
+        )
+        from transformers.models.qwen2.tokenization_qwen2 import Qwen2Tokenizer
+
+        sentinel = object()
+        previous = REGISTERED_TOKENIZER_CLASSES.get("Qwen2Tokenizer", sentinel)
+        REGISTERED_TOKENIZER_CLASSES.pop("Qwen2Tokenizer", None)
+        try:
+            self.assertTrue(install_qwen_tokenizer_registry())
+            self.assertFalse(install_qwen_tokenizer_registry())
+            self.assertIs(
+                REGISTERED_TOKENIZER_CLASSES["Qwen2Tokenizer"],
+                Qwen2Tokenizer,
+            )
+        finally:
+            if previous is sentinel:
+                REGISTERED_TOKENIZER_CLASSES.pop("Qwen2Tokenizer", None)
+            else:
+                REGISTERED_TOKENIZER_CLASSES["Qwen2Tokenizer"] = previous
 
 
 if __name__ == "__main__":

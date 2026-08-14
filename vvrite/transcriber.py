@@ -6,10 +6,14 @@ import miniaudio
 import numpy as np
 from huggingface_hub import model_info, snapshot_download
 
-from vvrite.mlx_runtime import install_qwen_only_model_namespace
+from vvrite.mlx_runtime import (
+    install_qwen_only_model_namespace,
+    install_qwen_tokenizer_registry,
+)
 
 
 install_qwen_only_model_namespace()
+install_qwen_tokenizer_registry()
 
 from mlx_audio.stt.utils import load_model  # noqa: E402
 

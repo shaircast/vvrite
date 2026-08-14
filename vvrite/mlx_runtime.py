@@ -49,3 +49,23 @@ def install_qwen_only_model_namespace() -> bool:
 
     sys.modules[_MODELS_PACKAGE] = namespace
     return True
+
+
+def install_qwen_tokenizer_registry() -> bool:
+    """Register Qwen's tokenizer without Transformers' broad model scan.
+
+    Qwen3-ASR declares ``Qwen2Tokenizer`` while using a custom model type.
+    Transformers 5 otherwise searches every model mapping that shares that
+    tokenizer name, which is both unnecessary and incompatible with vvrite's
+    deliberately minimal frozen bundle.
+    """
+    from transformers.models.auto.tokenization_auto import (
+        REGISTERED_TOKENIZER_CLASSES,
+    )
+    from transformers.models.qwen2.tokenization_qwen2 import Qwen2Tokenizer
+
+    already_registered = (
+        REGISTERED_TOKENIZER_CLASSES.get("Qwen2Tokenizer") is Qwen2Tokenizer
+    )
+    REGISTERED_TOKENIZER_CLASSES["Qwen2Tokenizer"] = Qwen2Tokenizer
+    return not already_registered
