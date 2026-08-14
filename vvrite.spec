@@ -23,7 +23,7 @@ SPARKLE_PUBLIC_ED_KEY = os.environ.get("SPARKLE_PUBLIC_ED_KEY", "").strip()
 info_plist = {
     "CFBundleName": "vvrite",
     "CFBundleShortVersionString": __version__,  # sourced from vvrite/__init__.__version__
-    "CFBundleVersion": "10",  # monotonic build number; bump each release
+    "CFBundleVersion": "11",  # monotonic build number; bump each release
     "LSUIElement": True,
     "NSMicrophoneUsageDescription": (
         "vvrite needs microphone access to record and transcribe your speech."
