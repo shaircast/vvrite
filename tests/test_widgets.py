@@ -2,14 +2,21 @@
 
 import types
 import unittest
+from unittest.mock import MagicMock, patch
 
+from AppKit import NSDragOperationCopy, NSMakeRect
 from Quartz import (
     kCGEventFlagMaskAlternate,
     kCGEventFlagMaskShift,
     kCGEventFlagMaskCommand,
 )
 
-from vvrite.widgets import format_shortcut, active_shortcut
+from vvrite.widgets import (
+    AppBundleDragView,
+    active_shortcut,
+    format_shortcut,
+    packaged_app_bundle_path,
+)
 
 
 class TestFormatShortcut(unittest.TestCase):
@@ -54,6 +61,52 @@ class TestActiveShortcut(unittest.TestCase):
 
     def test_hold_mode_uses_ptt_hotkey(self):
         self.assertEqual(active_shortcut(self._prefs("hold")), (0x36, 0))
+
+
+class TestPackagedAppBundlePath(unittest.TestCase):
+    @patch("vvrite.widgets.NSBundle")
+    def test_returns_packaged_app_path(self, mock_bundle_class):
+        bundle = MagicMock()
+        bundle.bundlePath.return_value = "/Applications/vvrite.app"
+        mock_bundle_class.mainBundle.return_value = bundle
+
+        self.assertEqual(packaged_app_bundle_path(), "/Applications/vvrite.app")
+
+    @patch("vvrite.widgets.NSBundle")
+    def test_returns_none_for_source_interpreter(self, mock_bundle_class):
+        bundle = MagicMock()
+        bundle.bundlePath.return_value = "/usr/local/bin"
+        mock_bundle_class.mainBundle.return_value = bundle
+
+        self.assertIsNone(packaged_app_bundle_path())
+
+
+class TestAppBundleDragView(unittest.TestCase):
+    def test_offers_copy_drag_operation(self):
+        view = AppBundleDragView.alloc().init()
+
+        self.assertEqual(
+            view.draggingSession_sourceOperationMaskForDraggingContext_(None, 0),
+            NSDragOperationCopy,
+        )
+
+    def test_icon_hint_and_grip_share_vertical_center(self):
+        view = (
+            AppBundleDragView.alloc()
+            .initWithFrame_bundlePath_accessibilityLabel_(
+                NSMakeRect(0, 0, 396, 44),
+                "/Applications/vvrite.app",
+                "Drag this item into the Accessibility list.",
+            )
+        )
+
+        centers = [
+            subview.frame().origin.y + subview.frame().size.height / 2.0
+            for subview in view.subviews()
+        ]
+        self.assertEqual(len(centers), 3)
+        for center in centers:
+            self.assertAlmostEqual(center, 22.0)
 
 
 if __name__ == "__main__":

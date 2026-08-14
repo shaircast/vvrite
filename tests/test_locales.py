@@ -175,7 +175,8 @@ class TestEnglishStringsCompleteness(unittest.TestCase):
         perms = ob["permissions"]
         for key in [
             "title", "accessibility", "accessibility_desc",
-            "microphone", "microphone_desc", "granted", "not_granted",
+            "drag_hint", "microphone", "microphone_desc", "granted",
+            "not_granted",
         ]:
             self.assertIn(key, perms, f"Missing onboarding.permissions.{key}")
         # hotkey

@@ -36,6 +36,7 @@ strings = {
             "title": "Permissions",
             "accessibility": "Accessibility",
             "accessibility_desc": "For global hotkey",
+            "drag_hint": "Drag this item into the Accessibility list.",
             "microphone": "Microphone",
             "microphone_desc": "For voice recording",
             "granted": "Granted",

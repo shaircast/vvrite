@@ -36,6 +36,7 @@ strings = {
             "title": "权限",
             "accessibility": "辅助功能",
             "accessibility_desc": "用于全局快捷键",
+            "drag_hint": "将此项目拖入辅助功能列表。",
             "microphone": "麦克风",
             "microphone_desc": "用于语音录制",
             "granted": "已授权",

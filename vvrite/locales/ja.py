@@ -36,6 +36,7 @@ strings = {
             "title": "権限",
             "accessibility": "アクセシビリティ",
             "accessibility_desc": "グローバルホットキー用",
+            "drag_hint": "この項目をアクセシビリティのリストにドラッグしてください。",
             "microphone": "マイク",
             "microphone_desc": "音声録音用",
             "granted": "許可済み",

@@ -36,6 +36,7 @@ strings = {
             "title": "Autorisations",
             "accessibility": "Accessibilité",
             "accessibility_desc": "Pour le raccourci global",
+            "drag_hint": "Faites glisser cet élément dans la liste Accessibilité.",
             "microphone": "Microphone",
             "microphone_desc": "Pour l'enregistrement vocal",
             "granted": "Accordé",

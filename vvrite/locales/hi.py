@@ -36,6 +36,7 @@ strings = {
             "title": "अनुमतियाँ",
             "accessibility": "एक्सेसिबिलिटी",
             "accessibility_desc": "ग्लोबल हॉटकी के लिए",
+            "drag_hint": "इस आइटम को एक्सेसिबिलिटी सूची में खींचें।",
             "microphone": "माइक्रोफ़ोन",
             "microphone_desc": "आवाज़ रिकॉर्डिंग के लिए",
             "granted": "अनुमति दी गई",

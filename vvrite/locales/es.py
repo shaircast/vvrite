@@ -36,6 +36,7 @@ strings = {
             "title": "Permisos",
             "accessibility": "Accesibilidad",
             "accessibility_desc": "Para tecla de acceso rápido global",
+            "drag_hint": "Arrastra este elemento a la lista de Accesibilidad.",
             "microphone": "Micrófono",
             "microphone_desc": "Para grabación de voz",
             "granted": "Concedido",

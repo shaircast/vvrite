@@ -36,6 +36,7 @@ strings = {
             "title": "İzinler",
             "accessibility": "Erişilebilirlik",
             "accessibility_desc": "Genel kısayol tuşu için",
+            "drag_hint": "Bu öğeyi Erişilebilirlik listesine sürükleyin.",
             "microphone": "Mikrofon",
             "microphone_desc": "Ses kaydı için",
             "granted": "Verildi",

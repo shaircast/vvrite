@@ -3,14 +3,25 @@
 import objc
 from vvrite.locales import t
 from AppKit import (
-    NSTextField,
+    NSColor,
+    NSCursor,
+    NSDraggingItem,
+    NSDragOperationCopy,
     NSFont,
+    NSImage,
+    NSImageScaleProportionallyUpOrDown,
+    NSImageView,
+    NSMakeRect,
+    NSView,
+    NSTextField,
+    NSWorkspace,
     NSEventModifierFlagCommand,
     NSEventModifierFlagShift,
     NSEventModifierFlagControl,
     NSEventModifierFlagOption,
     NSEventModifierFlagFunction,
 )
+from Foundation import NSBundle, NSURL
 from Quartz import (
     kCGEventFlagMaskCommand,
     kCGEventFlagMaskShift,
@@ -75,6 +86,121 @@ def active_shortcut(prefs):
     if prefs.recording_mode == "hold":
         return prefs.ptt_hotkey_keycode, prefs.ptt_hotkey_modifiers
     return prefs.hotkey_keycode, prefs.hotkey_modifiers
+
+
+def packaged_app_bundle_path() -> str | None:
+    """Return the running app bundle path, or None for a source interpreter."""
+    bundle = NSBundle.mainBundle()
+    path = str(bundle.bundlePath() or "") if bundle is not None else ""
+    return path if path.endswith(".app") else None
+
+
+class AppBundleDragView(NSView):
+    """A draggable app-bundle tile with an explicit grab affordance."""
+
+    def initWithFrame_bundlePath_accessibilityLabel_(
+        self,
+        frame,
+        bundle_path,
+        accessibility_label,
+    ):
+        self = objc.super(AppBundleDragView, self).initWithFrame_(frame)
+        if self is None:
+            return None
+
+        self._bundle_path = str(bundle_path)
+        self._bundle_icon = NSWorkspace.sharedWorkspace().iconForFile_(
+            self._bundle_path
+        )
+
+        self.setWantsLayer_(True)
+        layer = self.layer()
+        layer.setCornerRadius_(9.0)
+        layer.setBackgroundColor_(
+            NSColor.labelColor().colorWithAlphaComponent_(0.055).CGColor()
+        )
+        layer.setBorderWidth_(1.0)
+        layer.setBorderColor_(
+            NSColor.controlAccentColor().colorWithAlphaComponent_(0.55).CGColor()
+        )
+
+        height = frame.size.height
+        icon_size = min(30.0, height - 12.0)
+        icon_view = NSImageView.alloc().initWithFrame_(
+            NSMakeRect(12, (height - icon_size) / 2.0, icon_size, icon_size)
+        )
+        if self._bundle_icon is not None:
+            icon_view.setImage_(self._bundle_icon)
+        icon_view.setImageScaling_(NSImageScaleProportionallyUpOrDown)
+        self.addSubview_(icon_view)
+
+        hint_height = 18.0
+        hint = NSTextField.labelWithString_(accessibility_label)
+        hint.setFrame_(
+            NSMakeRect(
+                54,
+                (height - hint_height) / 2.0,
+                frame.size.width - 92,
+                hint_height,
+            )
+        )
+        hint.setFont_(NSFont.systemFontOfSize_(10.5))
+        hint.setTextColor_(NSColor.labelColor())
+        self.addSubview_(hint)
+
+        grip = NSImageView.alloc().initWithFrame_(
+            NSMakeRect(frame.size.width - 28, (height - 18) / 2.0, 18, 18)
+        )
+        grip_image = NSImage.imageWithSystemSymbolName_accessibilityDescription_(
+            "circle.grid.2x3.fill",
+            accessibility_label,
+        )
+        if grip_image is None:
+            grip_image = NSImage.imageWithSystemSymbolName_accessibilityDescription_(
+                "line.3.horizontal",
+                accessibility_label,
+            )
+        if grip_image is not None:
+            grip.setImage_(grip_image)
+        grip.setImageScaling_(NSImageScaleProportionallyUpOrDown)
+        grip.setContentTintColor_(NSColor.secondaryLabelColor())
+        self.addSubview_(grip)
+
+        self.setToolTip_(accessibility_label)
+        self.setAccessibilityLabel_(accessibility_label)
+        self.setAccessibilityHelp_(accessibility_label)
+        return self
+
+    def resetCursorRects(self):
+        self.addCursorRect_cursor_(self.bounds(), NSCursor.openHandCursor())
+
+    def mouseDragged_(self, event):
+        bundle_url = NSURL.fileURLWithPath_isDirectory_(self._bundle_path, True)
+        item = NSDraggingItem.alloc().initWithPasteboardWriter_(bundle_url)
+        icon_size = min(32.0, self.bounds().size.height)
+        item.setDraggingFrame_contents_(
+            NSMakeRect(12, (self.bounds().size.height - icon_size) / 2.0,
+                       icon_size, icon_size),
+            self._bundle_icon,
+        )
+        session = self.beginDraggingSessionWithItems_event_source_(
+            [item], event, self
+        )
+        if session is not None:
+            session.setAnimatesToStartingPositionsOnCancelOrFail_(True)
+
+    def draggingSession_sourceOperationMaskForDraggingContext_(
+        self,
+        session,
+        context,
+    ):
+        return NSDragOperationCopy
+
+    def acceptsFirstMouse_(self, event):
+        return True
+
+    def mouseDownCanMoveWindow(self):
+        return False
 
 
 class ShortcutField(NSTextField):

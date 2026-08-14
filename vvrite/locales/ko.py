@@ -36,6 +36,7 @@ strings = {
             "title": "권한",
             "accessibility": "손쉬운 사용",
             "accessibility_desc": "전역 단축키 사용",
+            "drag_hint": "이 항목을 손쉬운 사용 목록으로 드래그하세요.",
             "microphone": "마이크",
             "microphone_desc": "음성 녹음 사용",
             "granted": "허용됨",

@@ -36,6 +36,7 @@ strings = {
             "title": "Permessi",
             "accessibility": "Accessibilità",
             "accessibility_desc": "Per la scorciatoia globale",
+            "drag_hint": "Trascina questo elemento nell’elenco Accessibilità.",
             "microphone": "Microfono",
             "microphone_desc": "Per la registrazione vocale",
             "granted": "Concesso",

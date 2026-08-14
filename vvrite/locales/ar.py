@@ -36,6 +36,7 @@ strings = {
             "title": "الأذونات",
             "accessibility": "إمكانية الوصول",
             "accessibility_desc": "لاختصار لوحة المفاتيح العام",
+            "drag_hint": "اسحب هذا العنصر إلى قائمة إمكانية الوصول.",
             "microphone": "الميكروفون",
             "microphone_desc": "لتسجيل الصوت",
             "granted": "ممنوح",

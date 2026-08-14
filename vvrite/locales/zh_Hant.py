@@ -36,6 +36,7 @@ strings = {
             "title": "權限",
             "accessibility": "輔助使用",
             "accessibility_desc": "用於全域快捷鍵",
+            "drag_hint": "將此項目拖入輔助使用列表。",
             "microphone": "麥克風",
             "microphone_desc": "用於語音錄製",
             "granted": "已授權",

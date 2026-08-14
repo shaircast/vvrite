@@ -34,7 +34,7 @@ from AppKit import (
 from Foundation import NSURL, NSTimer
 
 from vvrite.locales import t, set_locale, SUPPORTED_LANGUAGES
-from vvrite.widgets import ShortcutField
+from vvrite.widgets import AppBundleDragView, ShortcutField, packaged_app_bundle_path
 from vvrite import transcriber
 
 # Window dimensions
@@ -94,6 +94,7 @@ class OnboardingWindowController(NSObject):
         self._lang_popup = None
         self._acc_status = None
         self._mic_status = None
+        self._app_drag_view = None
         self._build_window()
         return self
 
@@ -234,6 +235,7 @@ class OnboardingWindowController(NSObject):
         self._retract_change_btn = None
         self._acc_status = None
         self._mic_status = None
+        self._app_drag_view = None
 
         # Stop permission timer if leaving permissions step
         if step != _PERMISSIONS and self._permission_timer:
@@ -387,22 +389,38 @@ class OnboardingWindowController(NSObject):
         )
 
         self._acc_status = self._build_permission_card(
-            area, 104,
+            area, 128,
             t("onboarding.permissions.accessibility"),
             t("onboarding.permissions.accessibility_desc"),
             "openAccessibility:",
         )
         self._mic_status = self._build_permission_card(
-            area, 32,
+            area, 56,
             t("onboarding.permissions.microphone"),
             t("onboarding.permissions.microphone_desc"),
             "openMicrophonePrivacy:",
         )
 
+        bundle_path = packaged_app_bundle_path()
+        if bundle_path:
+            self._build_app_drag_item(area, bundle_path)
+
         self._update_permission_status()
         self._permission_timer = NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats_(
             2.0, self, "pollPermissions:", None, True
         )
+
+    def _build_app_drag_item(self, area, bundle_path):
+        drag_label = t("onboarding.permissions.drag_hint")
+        self._app_drag_view = (
+            AppBundleDragView.alloc()
+            .initWithFrame_bundlePath_accessibilityLabel_(
+                NSMakeRect(_MARGIN, 0, _CONTENT_W, 44),
+                bundle_path,
+                drag_label,
+            )
+        )
+        area.addSubview_(self._app_drag_view)
 
     def _build_permission_card(self, area, card_y, title_text, desc_text, button_action):
         card = self._make_card(area, NSMakeRect(_MARGIN, card_y, _CONTENT_W, 60))
@@ -428,7 +446,9 @@ class OnboardingWindowController(NSObject):
         card.addSubview_(btn)
 
         status = NSTextField.labelWithString_("")
-        status.setFrame_(NSMakeRect(_CONTENT_W - 18 - 72 - 8 - 96, 20, 96, 18))
+        status.setFrame_(
+            NSMakeRect(_CONTENT_W - 18 - 72 - 8 - 96, 20, 96, 18)
+        )
         status.setFont_(NSFont.systemFontOfSize_(11.0))
         status.setAlignment_(2)  # right
         card.addSubview_(status)

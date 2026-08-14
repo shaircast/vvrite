@@ -36,6 +36,7 @@ strings = {
             "title": "Berechtigungen",
             "accessibility": "Bedienungshilfen",
             "accessibility_desc": "Für globale Tastenkombination",
+            "drag_hint": "Ziehe dieses Element in die Bedienungshilfen-Liste.",
             "microphone": "Mikrofon",
             "microphone_desc": "Für Sprachaufnahme",
             "granted": "Erteilt",
